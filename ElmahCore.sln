@@ -24,6 +24,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElmahCore.MySql", "ElmahCor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElmahCore.DemoCore5", "ElmahCore.DemoCore5\ElmahCore.DemoCore5.csproj", "{289FB7BF-7E2C-406D-9B46-360B5B4B8AAF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElmahCore.MongoDB", "ElmahCore.MongoDB\ElmahCore.MongoDB.csproj", "{C70771A0-038B-49A0-8884-00B7C5C4706F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
