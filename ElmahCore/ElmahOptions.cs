@@ -42,9 +42,17 @@ namespace ElmahCore
         public ErrorLog EventLog { get; set; }
 
         /// <summary>
-        ///     Database connection string. Used with SqlErrorLog, MySqlErrorLog, PgsqlErrorLog
+        ///     Database connection string. Used with SqlErrorLog, MySqlErrorLog, PgsqlErrorLog, MongoDBErrorLog
         /// </summary>
         public string ConnectionString { get; set; }
+        /// <summary>
+        ///     Database name, used with MongoDBErrorLog.
+        /// </summary>
+        public string DatabaseName { get; set; }
+        /// <summary>
+        ///     Collection name, used with MongoDBErrorLog. If not provided, it uses "elmahcore_collection"
+        /// </summary>
+        public string CollectionName { get; set; }
 
         /// <summary>
         ///     Permission Check callback
