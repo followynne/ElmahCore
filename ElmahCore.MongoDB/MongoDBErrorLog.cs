@@ -24,16 +24,18 @@ namespace ElmahCore.MongoDB
         }
         public MongoDBErrorLog(IMongoClient client, string connectionString, string databaseName, string collectionName = "elmahcore_collection")
         {
-            //var x = options.Value.ConnectionString.Split('|');
-            //_factory = factory;
-            //var dbname = x[0];
-            var db = client.GetDatabase(databaseName);
-            var collectionname = "elmah_collection";
-            //_dbname = dbname;
-            //var data = new Func<IMongoCollection<MongoLogEntry>>(() => db.GetCollection<MongoLogEntry>(collectionname));
-
-            _collection = CreateCollectionIfNotExistent(db, collectionname);
-
+            IMongoClient internalClient;
+            if (client is null)
+            {
+                internalClient = new MongoClient(connectionString);
+            }
+            else
+            {
+                internalClient = client;
+            }
+            var db = internalClient.GetDatabase(databaseName);
+            collectionName ??= "elmahcore_collection";
+            _collection = CreateCollectionIfNotExistent(db, collectionName);
         }
 
         private IMongoCollection<MongoDBLogEntry> CreateCollectionIfNotExistent(IMongoDatabase db, string collectionname)
@@ -51,18 +53,25 @@ namespace ElmahCore.MongoDB
 
         public override ErrorLogEntry GetError(string id)
         {
-            var errorLog = _collection.Find(a => a.ErrorId == id).FirstOrDefault();
-            return new ErrorLogEntry(this, id, ErrorXml.DecodeString(errorLog.XmlError));
-            //throw new NotImplementedException();
+            var searchedError = _collection.Find(a => a.ErrorId == id)
+                .Project(err => err.XmlError).FirstOrDefault();
+            return new ErrorLogEntry(this, id, ErrorXml.DecodeString(searchedError));
         }
 
         public override int GetErrors(int errorIndex, int pageSize, ICollection<ErrorLogEntry> errorEntryList)
         {
-            var errorLog = _collection.Find(a => true).Skip(errorIndex).Limit(pageSize).ToList();
-            errorLog.ForEach(a => errorEntryList.Add(
+            if (errorIndex < 0) throw new ArgumentOutOfRangeException(nameof(errorIndex), errorIndex, null);
+            if (pageSize < 0) throw new ArgumentOutOfRangeException(nameof(pageSize), pageSize, null);
+
+            var errorLog = _collection.Find(FilterDefinition<MongoDBLogEntry>.Empty)
+            .Sort(Builders<MongoDBLogEntry>.Sort.Descending(a => a.Time));
+            
+            var documentsCount = errorLog.CountDocuments();
+            var errors = errorLog.Skip(errorIndex).Limit(pageSize).ToList();
+            
+            errors.ForEach(a => errorEntryList.Add(
               new ErrorLogEntry(this, a.ErrorId, ErrorXml.DecodeString(a.XmlError))));
-            return errorLog.Count;
-            throw new NotImplementedException();
+            return documentsCount < int.MaxValue ? Convert.ToInt32(documentsCount) : int.MaxValue;
         }
 
         public override string Log(Error error)
@@ -74,10 +83,8 @@ namespace ElmahCore.MongoDB
 
         public override void Log(Guid id, Error error)
         {
-
             var xmlerror = ErrorXml.EncodeString(error);
             _collection.InsertOne(new MongoDBLogEntry(id.ToString(), xmlerror, error));
-            //throw new NotImplementedException();
         }
     }
 }
