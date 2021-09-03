@@ -24,7 +24,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElmahCore.MySql", "ElmahCor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElmahCore.DemoCore5", "ElmahCore.DemoCore5\ElmahCore.DemoCore5.csproj", "{289FB7BF-7E2C-406D-9B46-360B5B4B8AAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElmahCore.MongoDB", "ElmahCore.MongoDB\ElmahCore.MongoDB.csproj", "{C70771A0-038B-49A0-8884-00B7C5C4706F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElmahCore.MongoDB", "ElmahCore.MongoDB\ElmahCore.MongoDB.csproj", "{C70771A0-038B-49A0-8884-00B7C5C4706F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9D9B6842-5095-4AE9-A19F-BEA0791BD5E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElmahCore.ErrorLogs.Tests", "ElmahCore.ErrorLogs.Tests\ElmahCore.ErrorLogs.Tests.csproj", "{F2D52D2F-1C74-4A8E-816D-BFF357AAFBAE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,6 +64,14 @@ Global
 		{289FB7BF-7E2C-406D-9B46-360B5B4B8AAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{289FB7BF-7E2C-406D-9B46-360B5B4B8AAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{289FB7BF-7E2C-406D-9B46-360B5B4B8AAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C70771A0-038B-49A0-8884-00B7C5C4706F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C70771A0-038B-49A0-8884-00B7C5C4706F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C70771A0-038B-49A0-8884-00B7C5C4706F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C70771A0-038B-49A0-8884-00B7C5C4706F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2D52D2F-1C74-4A8E-816D-BFF357AAFBAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2D52D2F-1C74-4A8E-816D-BFF357AAFBAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2D52D2F-1C74-4A8E-816D-BFF357AAFBAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2D52D2F-1C74-4A8E-816D-BFF357AAFBAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +79,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{A6EABDE3-E1CD-43B5-BB15-880210D8FC3F} = {8E26F641-674E-421C-B37C-AF2A690DA1CF}
 		{289FB7BF-7E2C-406D-9B46-360B5B4B8AAF} = {8E26F641-674E-421C-B37C-AF2A690DA1CF}
+		{F2D52D2F-1C74-4A8E-816D-BFF357AAFBAE} = {9D9B6842-5095-4AE9-A19F-BEA0791BD5E0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FABFFBFF-15DA-48E3-856C-4A82E42A292B}
