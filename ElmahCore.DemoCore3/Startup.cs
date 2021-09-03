@@ -1,11 +1,13 @@
 using ElmahCore.Mvc;
 using ElmahCore.Sql;
+using ElmahCore.MongoDB;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MongoDB.Driver;
 
 namespace ElmahCore.DemoCore3
 {
@@ -28,14 +30,25 @@ namespace ElmahCore.DemoCore3
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            //services.AddElmah<XmlFileErrorLog>(options =>
+            // IMongoClient singleton registration example
+            // services.AddSingleton<IMongoClient>(s =>
+            // {
+            //     var client = new MongoClient("mongodb://localhost:27017/?readPreference=primary&appname=mongodb-vscode%200.5.0&ssl=false");
+            //     return client;
+            // });
+
+            // services.AddElmah<XmlFileErrorLog>(options =>
             services.AddElmah<SqlErrorLog>(options =>
-                //services.AddElmah(options =>
+            //services.AddElmah(options =>
             {
                 //options.OnPermissionCheck = context => context.User.Identity.IsAuthenticated;
                 options.Path = @"elmah";
                 options.ConnectionString = "Server=.;Database=elmahtest;Trusted_Connection=True;";
                 options.LogPath = "~/errors.xml";
+                // options.ConnectionString = "mongodb://localhost:27017/project?readPreference=primary&ssl=false";
+                // options.DatabaseName = "project";
+                // options.ShouldCollectionBeCapped = true;
+                // options.CapMbSize = 30000000;
                 //options.SourcePaths = new []
                 //{
                 //    @"D:\tmp\ElmahCore.DemoCore3",
