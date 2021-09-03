@@ -22,5 +22,9 @@ ElmahCore.Postgresql/bin/**/*
 ElmahCore.Postgresql/obj/**/*
 ElmahCore.MySql/bin/**/*
 ElmahCore.MySql/obj/**/*
+ElmahCore.MongoDB/bin/**/*
+ElmahCore.MongoDB/obj/**/*
+ElmahCore.ErrorLogs.Tests/bin/**/*
+ElmahCore.ErrorLogs.Tests/obj/**/*
 /.vs/ElmahCore
 /.vs
