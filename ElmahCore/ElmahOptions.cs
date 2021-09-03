@@ -53,7 +53,14 @@ namespace ElmahCore
         ///     Collection name, used with MongoDBErrorLog. If not provided, it uses "elmahcore_collection"
         /// </summary>
         public string CollectionName { get; set; }
-
+        /// <summary>
+        ///     Cap the collection on create, used with MongoDBErrorLog.
+        /// </summary>
+        public bool ShouldCollectionBeCapped { get; set; }
+        /// <summary>
+        ///     Collection cap size, used with MongoDBErrorLog.
+        /// </summary>
+        public long CapMbSize { get; set; }
         /// <summary>
         ///     Permission Check callback
         /// </summary>
@@ -89,4 +96,5 @@ namespace ElmahCore
             return OnError(context, error);
         }
     }
+
 }
