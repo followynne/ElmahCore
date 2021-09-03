@@ -56,7 +56,8 @@ namespace ElmahCore.MongoDB
                     var options = new CreateCollectionOptions
                     {
                         Capped = createCappedCollection,
-                        MaxSize = collectionSize > 0 ? collectionSize : 50000000
+                        MaxSize = collectionSize > 0 ? collectionSize : 50000,
+                        MaxDocuments = 10000,
                     };
                     db.CreateCollection(collectionname, options);
                 }
