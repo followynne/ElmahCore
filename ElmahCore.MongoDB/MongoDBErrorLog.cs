@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 namespace ElmahCore.MongoDB
 {
+#nullable enable
     public sealed class MongoDBErrorLog : ErrorLog
     {
         private readonly IMongoCollection<MongoDBLogEntry> _collection;
@@ -13,32 +14,36 @@ namespace ElmahCore.MongoDB
         ///     Gets the name of this error log implementation.
         /// </summary>
         public override string Name => "MongoDB Error Log";
-
+        public string CollectionName { get; set; }
+        public MongoDBErrorLog(IMongoClient client, IOptions<ElmahOptions> options) : this(client, options.Value.ConnectionString, options.Value.DatabaseName, options.Value.CollectionName, options.Value.ShouldCollectionBeCapped, options.Value.CapMbSize) { }
         /// <summary>
-        ///     Gets the connection string used by the log to connect to the database.
+        /// it searches for a singleton registration; if it's null it instances a new client
+        /// it expects an existing database - it will create the collection if not existent
         /// </summary>
-        // ReSharper disable once MemberCanBeProtected.Global
-        public string ConnectionString { get; }
-        public MongoDBErrorLog(IMongoClient client, IOptions<ElmahOptions> options) : this(client, options.Value.ConnectionString, options.Value.DatabaseName, options.Value.CollectionName)
+        /// <example>
+        /// IMongoClient singleton registration example
+        /// services.AddSingleton<>IMongoClient>(s =>
+        /// {
+        ///   var client = new MongoClient("mongodb://localhost:27017/?readPreference=primary");
+        ///   return client;
+        /// });
+        /// </example>
+        public MongoDBErrorLog(IMongoClient client, string? connectionString, string databaseName,
+            string? collectionName, bool createCappedCollection, long collectionSize)
         {
-        }
-        public MongoDBErrorLog(IMongoClient client, string connectionString, string databaseName, string collectionName = "elmahcore_collection")
-        {
-            IMongoClient internalClient;
-            if (client is null)
+            IMongoClient internalClient = client;
+            if (internalClient is null)
             {
+                if (string.IsNullOrWhiteSpace(connectionString)) throw new ArgumentNullException("Mongo Client instance not provided and connection string null.");
                 internalClient = new MongoClient(connectionString);
             }
-            else
-            {
-                internalClient = client;
-            }
+
             var db = internalClient.GetDatabase(databaseName);
-            collectionName ??= "elmahcore_collection";
-            _collection = CreateCollectionIfNotExistent(db, collectionName);
+            CollectionName = collectionName ?? "elmahcore_collection";
+            _collection = CreateCollectionIfNotExistent(db, CollectionName, createCappedCollection, collectionSize);
         }
 
-        private IMongoCollection<MongoDBLogEntry> CreateCollectionIfNotExistent(IMongoDatabase db, string collectionname)
+        private IMongoCollection<MongoDBLogEntry> CreateCollectionIfNotExistent(IMongoDatabase db, string collectionname, bool createCappedCollection, long collectionSize)
         {
             var checkCollection = db.ListCollectionNames(new ListCollectionNamesOptions()
             {
@@ -46,7 +51,19 @@ namespace ElmahCore.MongoDB
             });
             if (!checkCollection.Any())
             {
-                db.CreateCollection(collectionname);
+                if (createCappedCollection)
+                {
+                    var options = new CreateCollectionOptions
+                    {
+                        Capped = createCappedCollection,
+                        MaxSize = collectionSize > 0 ? collectionSize : 50000000
+                    };
+                    db.CreateCollection(collectionname, options);
+                }
+                else
+                {
+                    db.CreateCollection(collectionname);
+                }
             }
             return db.GetCollection<MongoDBLogEntry>(collectionname);
         }
@@ -65,10 +82,10 @@ namespace ElmahCore.MongoDB
 
             var errorLog = _collection.Find(FilterDefinition<MongoDBLogEntry>.Empty)
             .Sort(Builders<MongoDBLogEntry>.Sort.Descending(a => a.Time));
-            
+
             var documentsCount = errorLog.CountDocuments();
             var errors = errorLog.Skip(errorIndex).Limit(pageSize).ToList();
-            
+
             errors.ForEach(a => errorEntryList.Add(
               new ErrorLogEntry(this, a.ErrorId, ErrorXml.DecodeString(a.XmlError))));
             return documentsCount < int.MaxValue ? Convert.ToInt32(documentsCount) : int.MaxValue;

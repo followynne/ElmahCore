@@ -7,7 +7,7 @@ using System.Linq;
 namespace ElmahCore.MongoDB
 {
     [BsonIgnoreExtraElements]
-    internal sealed class MongoDBLogEntry
+    public sealed class MongoDBLogEntry
     {
         public MongoDBLogEntry(string id, string xml, Error error)
         {
